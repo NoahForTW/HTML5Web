@@ -1994,13 +1994,13 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  5744800: function() {return Module.webglContextAttributes.premultipliedAlpha;},  
- 5744861: function() {return Module.webglContextAttributes.preserveDrawingBuffer;},  
- 5744925: function() {return Module.webglContextAttributes.powerPreference;},  
- 5744983: function() {Module['emscripten_get_now_backup'] = performance.now;},  
- 5745038: function($0) {performance.now = function() { return $0; };},  
- 5745086: function($0) {performance.now = function() { return $0; };},  
- 5745134: function() {performance.now = Module['emscripten_get_now_backup'];}
+  5744896: function() {return Module.webglContextAttributes.premultipliedAlpha;},  
+ 5744957: function() {return Module.webglContextAttributes.preserveDrawingBuffer;},  
+ 5745021: function() {return Module.webglContextAttributes.powerPreference;},  
+ 5745079: function() {Module['emscripten_get_now_backup'] = performance.now;},  
+ 5745134: function($0) {performance.now = function() { return $0; };},  
+ 5745182: function($0) {performance.now = function() { return $0; };},  
+ 5745230: function() {performance.now = Module['emscripten_get_now_backup'];}
 };
 
 
@@ -2147,6 +2147,24 @@ var ASM_CONSTS = {
       if (Module['extraStackTrace']) js += '\n' + Module['extraStackTrace']();
       return demangleAll(js);
     }
+
+  function _DetectDeviceInfo() {
+          // Get user agent details
+          var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  
+          // Determine device type
+          var deviceType = "Desktop";
+          if (/windows phone/i.test(userAgent)) {
+              deviceType = "Windows Phone";
+          } else if (/android/i.test(userAgent)) {
+              deviceType = "Android";
+          } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+              deviceType = "iOS";
+          }
+  
+          // Pass the result back to Unity
+          SendMessage('DeviceManager', 'OnDeviceInfoDetected', deviceType);
+      }
 
   function _GetJSMemoryInfo(totalJSptr, usedJSptr) {
       if (performance.memory) {
@@ -15940,6 +15958,7 @@ function checkIncomingModuleAPI() {
   ignoredModuleProp('fetchSettings');
 }
 var asmLibraryArg = {
+  "DetectDeviceInfo": _DetectDeviceInfo,
   "GetJSMemoryInfo": _GetJSMemoryInfo,
   "JS_Accelerometer_IsRunning": _JS_Accelerometer_IsRunning,
   "JS_Accelerometer_Start": _JS_Accelerometer_Start,
